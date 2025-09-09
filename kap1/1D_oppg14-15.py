@@ -24,7 +24,7 @@ print(f"min(): {min(liste)}, max: {max(liste)}")
 # Siden listen er sortert vil de minste verdiene settes inn i starten av listen og forskyve indekser.
 # Velger å gå baklengs gjennom listen. Passer på å ikke bruke første og siste indeks pga. måten
 # vi sjekker plassering av tallet som skal settes inn.
-nye_tall = [17, 42, 81]
+nye_tall = [17.5, 42.3, 81.7]
 # Starter med det største tallet først og når det er satt inn endrer vi "indeks" til én mindre.
 nye_tall.reverse()
 for nytt_tall in nye_tall:
@@ -32,7 +32,8 @@ for nytt_tall in nye_tall:
         # Sjekker om tallet ligger mellom i-1 og i+1.
         if liste[i-1] <= nytt_tall and nytt_tall <= liste[i+1]:
             liste.insert(i,nytt_tall)
+            # Nå har vi plassert tallet. Hopper ut av indre for-loop med break 
+            # og går til neste tall som skal settes inn ved hjelp av ytre for-loop.
             break
-
 
 print(liste)
