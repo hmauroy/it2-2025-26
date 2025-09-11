@@ -123,6 +123,20 @@ def random_chars(n):
         s += chr( randint(97,122) )
     return s
 
+from heapq import merge
+
+def merge_sort_rosetta(m):
+    if len(m) <= 1:
+        return m
+
+    middle = len(m) // 2
+    left = m[:middle]
+    right = m[middle:]
+
+    left = merge_sort_rosetta(left)
+    right = merge_sort_rosetta(right)
+    return list(merge(left, right))
+
 
 def main():
     #print(f'lengde 3: {random_string_list(3)}')
@@ -156,6 +170,7 @@ def main():
     list_2 = copy.deepcopy(list_1)
     list_3 = copy.deepcopy(list_1)
     list_4 = copy.deepcopy(list_1)
+    list_5 = copy.deepcopy(list_1)
 
     # MergeSort
     start_time = time.time()
@@ -186,14 +201,25 @@ def main():
     #print(list_1[:10])
     start_time = time.time()
     #print(start_time)
-    list_4_sorted = insertion_sort(list_4)
+    list_4_sorted = mergeSort_recursively(list_4)
     #print(list_1_sorted[:10])
     duration = time.time() - start_time
     print(f"MergeSort Recursively sorted {n} lists in {duration*1000:.1f} ms.")
 
+    # MergeSort Rosettacode
+    #print(list_1[:10])
+    start_time = time.time()
+    #print(start_time)
+    list_5_sorted = merge_sort_rosetta(list_5)
+    #print(list_1_sorted[:10])
+    duration = time.time() - start_time
+    print(f"MergeSort Rosettacode sorted {n} lists in {duration*1000:.1f} ms.")
+
     print(f'Diff: insertionSort == MergeSort {list_1_sorted == list_2_sorted}')
     print(f'Diff: insertionSort == PythonSort {list_1_sorted == list_3_sorted}')
     print(f'Diff: MergeSort == MergeSort Recursively {list_2_sorted == list_4_sorted}')
+    print(f'Diff: MergeSort Rosetta == PythonSort {list_5_sorted == list_3_sorted}')
+    print(f'Diff: MergeSort Rosetta == MergeSort {list_5_sorted == list_2_sorted}')
     
     
 

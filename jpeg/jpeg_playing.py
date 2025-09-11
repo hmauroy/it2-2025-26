@@ -11,7 +11,7 @@ print(f"Data type: {img.dtype}")
 # Display the image
 plt.imshow(img)
 plt.axis('off')
-#plt.show()
+plt.show()
 
 
 w = img.shape[1]
