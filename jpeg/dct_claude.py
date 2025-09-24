@@ -186,6 +186,8 @@ def demonstrate_jpeg_dct():
     compression_info = f"Non-zero coefficients: {non_zero_coeffs}/64 ({non_zero_coeffs/64*100:.1f}%)"
     print(compression_info)
 
+    
+
 def visualize_dct_basis():
     """
     Visualize the 2D DCT basis functions to understand what the transform does.
@@ -221,4 +223,4 @@ if __name__ == "__main__":
     demonstrate_jpeg_dct()
     
     # Uncomment to visualize DCT basis functions
-    # visualize_dct_basis()
+    visualize_dct_basis()
