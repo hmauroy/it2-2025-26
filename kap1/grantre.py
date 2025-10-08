@@ -1,0 +1,14 @@
+                      T
+                     TTT
+                  TTTTTTTTT
+               TTTTTTTTTTTTTTT
+                      T
+                     TTT
+                  TTTTTTTTT
+               TTTTTTTTTTTTTTT
+                      T
+                     TTT
+                  TTTTTTTTT
+               TTTTTTTTTTTTTTT
+                     TTT
+                     TTT

@@ -130,9 +130,15 @@ image_diff = image - image_back
 
 
 # Display the images
-fig, axes = plt.subplots(2, 2, figsize=(12, 6))
-fig.suptitle('2D DCT Basis Functions (8x8)', fontsize=16)
+fig, axes = plt.subplots(3, 2, figsize=(12, 6))
+fig.suptitle('RGB til YUV', fontsize=16)
 axes[0, 0].imshow(image)
-axes[0, 1].imshow(image_diff)
+axes[0, 0].set_title(f'(Original)', fontsize=8)
+axes[0, 1].imshow(image_yuv)
+axes[0, 1].set_title(f'(YUV)', fontsize=8)
+axes[1, 0].imshow(image_back)
+axes[1, 0].set_title(f'(Image back)', fontsize=8)
+axes[1, 1].imshow(image_diff[:,:,0],cmap="gray")
+axes[1, 1].set_title(f'(Red Diff)', fontsize=8)
 
 plt.show()
