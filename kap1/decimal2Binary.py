@@ -40,9 +40,11 @@ def decimalToBinaryBad(tall):
         else:
             output += "0"
     return output
-for i in range(100):
-    print(decimalToBinaryBad(i) == decimalToBinary(i), i, decimalToBinaryBad(i),decimalToBinary(i))
 
-binært = decimalToBinaryBad(12)
+def test_algoritmene():
+    for i in range(100):
+        print(decimalToBinaryBad(i) == decimalToBinary(i), i, decimalToBinaryBad(i),decimalToBinary(i))
+
+binært = decimalToBinaryBad(255)
 print(binært)
 print(f"{len(binært)}-bit")
