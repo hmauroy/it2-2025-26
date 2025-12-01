@@ -64,6 +64,7 @@ class QR_generator:
         self.format_string = None
         self.error_correction = error_correction
         self.mask = mask
+        self.final_mask = "101010000010010"
         self.rutebredde = rutebredde
         self.padx = 15
         self.pady = 15
@@ -179,8 +180,7 @@ class QR_generator:
         # Combine original format_string with error correction.
         self.format_string += error_correction
         # XOR final format string with this mask: 101010000010010
-        final_mask = "101010000010010"
-        self.format_string = self.XOR(self.format_string,final_mask)
+        self.format_string = self.XOR(self.format_string,self.final_mask)
         return self.format_string
 
 

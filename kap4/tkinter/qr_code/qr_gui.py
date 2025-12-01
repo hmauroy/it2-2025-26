@@ -108,13 +108,13 @@ canvas.pack(expand=True)
 canvas.bind("<Button-1>", handle_klikk)
 
 
-qr = QR_generator(error_correction=1,mask=4)
+qr = QR_generator(error_correction=1,mask=5)
 qr.drawGrid(canvas)
 qr.drawDefaultCode(canvas)
 qr.text_to_bits("Hei IT2!")
 qr.create_format_string()
 print(f"format_string error corrected: {qr.mask_format_string()}")
-
+print(qr.XOR("111011111000100",qr.final_mask))
 
 
 # Kjører vinduet. Må være nederst i koden.
