@@ -49,7 +49,7 @@ def generate_qr_code(text, mode="utf-8"):
     else:
         raise ValueError("Unsupported encoding mode")
 
-    #img.save(f"qr_code_{text_mode}_{version_error_correction}.png", "PNG")
+    img.save(f"qr_code_{text_mode}_{version_error_correction}.png", "PNG")
     return encoded_text, img
 
 # Example usage

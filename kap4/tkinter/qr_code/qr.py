@@ -1,5 +1,5 @@
 """Klasser for QR-code generator."""
-from rute_definisjoner import coordinates
+from rute_definisjoner import coordinates, data_coordinates, formatting_data_upper_left, formatting_data_right
 import reedsolo
 
 class Rute:
@@ -111,6 +111,14 @@ class QR_generator:
             rute = self.grid[j][i]
             rute.fill = "black"
             canvas.itemconfig(rute.rect, fill=rute.fill)
+    
+    def drawDataRedSquares(self,canvas):
+        for rute in data_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            rute.fill = "red"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
 
     def decimalToBinary(self,tall,n=8):
         output = ""
@@ -183,4 +191,30 @@ class QR_generator:
         self.format_string = self.XOR(self.format_string,self.final_mask)
         return self.format_string
 
-
+    def draw_format_string(self,canvas):
+        # Draw upper left format string
+        teller = 0
+        for rute in formatting_data_upper_left:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if self.format_string[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
+        
+        # Draw right formatting
+        teller = 0
+        for rute in formatting_data_right:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if self.format_string[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            rute.fill = "dodgerblue"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
