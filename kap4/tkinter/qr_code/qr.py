@@ -140,11 +140,22 @@ class QR_generator:
         self.format_string = ec_level + mask_number
 
 
-    def XOR(self,tall1, tall2):
+    def XOR(self,tall1, tall2, padded=False):
         """XOR av tall1 og tall2"""
         t1 = int(tall1,2)    # base 2
         t2 = int(tall2,2)    # base 2
-        # Return the bits as string padded to 15 bits
+        if padded:
+            pad_len = 15-len(f"{t1 ^ t2:15b}")
+            xored = f"{t1 ^ t2:15b}"
+            xored = list(xored)
+            xored.reverse()
+            while xored[-1] == ' ':
+                xored.pop()
+            while len(xored) < 15:
+                xored.append(0)
+            xored = str(xored)
+            return xored
+        # Return the bits as string padded to 15 bits with blank spaces
         return f"{t1 ^ t2:15b}"
     
     def mask_format_string(self):
