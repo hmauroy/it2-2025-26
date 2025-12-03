@@ -1,5 +1,9 @@
 """
 Stokker om de midterste bokstavene i hvert ord i en tekst.
+
+Eksempel på bruk:
+tekst = omstokket_tekst("Heisann IT2klassen!)
+print(tekst) gir svaret "Hnieasn IlsaT2kesn"
 """
 from random import randint
 
@@ -87,7 +91,8 @@ def main():
     tekst = "En lengre tekst som er vanskelig! hmauroy@gmail.com å lese hvis den er omstokket."
     print(tekst)
     print(omstokket_tekst(tekst))
-    vitser = vitser = [
+    print(omstokket_tekst("Heisann IT2klassen"))
+    vitser = [
     "Hei, pass deg for den den landminen! Pøh, og den tror du jeg går på",
 
     "Har du hørt om han som ikke klarte å komme på hva støv betød på engelsk? Han følte seg ganske dust",
