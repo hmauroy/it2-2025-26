@@ -1,5 +1,6 @@
 """Klasser for QR-code generator."""
 from rute_definisjoner import coordinates, data_coordinates, formatting_data_upper_left, formatting_data_right
+from rute_definisjoner import data_type_coordinates, data_length_coordinates
 import reedsolo
 
 class Rute:
@@ -58,9 +59,13 @@ class QR_generator:
     11 = Level Q (Quartile - ~25%)
     10 = Level H (High - ~30%)
     """
-    def __init__(self,bredde=25,rutebredde=15,error_correction=1,mask=5):
+    def __init__(self,text="Hei IT2!",bredde=25,rutebredde=15,error_correction=1,mask=5):
         self.bredde = bredde
-        self.bitstream = None
+        self.text = text
+        self.rs = reedsolo.RSCodec(8)
+        self.bitstream = self.text_to_bits()
+        self.data_format = "0100"
+        self.data_length = self.decimalToBinary(len(self.text))
         self.format_string = None
         self.error_correction = error_correction
         self.mask = mask
@@ -68,22 +73,22 @@ class QR_generator:
         self.rutebredde = rutebredde
         self.padx = 15
         self.pady = 15
-        self.rs = reedsolo.RSCodec(8)
         self.grid = self.createGrid()
     
-    def text_to_bits(self,text):
-        text_bytes = list(text.encode("utf-8"))
+    def text_to_bits(self):
+        text_bytes = list(self.text.encode("utf-8"))
         print(f"text as array: {text_bytes}")
         # Encode using Reed-Soloman error correction.
         encoded_text = self.rs.encode(text_bytes)
         print("R-S Encoded text:")
         print(list(encoded_text))
         # Konverter alle tall til en 8-bit stream:
-        self.bitstream = []
+        bitstream = ""
         for tall in list(encoded_text):
             tall_byte = self.decimalToBinary(tall)
-            self.bitstream.append(tall_byte)
-        print(self.bitstream)
+            for bit in tall_byte:
+                bitstream += bit
+        return bitstream
         
 
     def createGrid(self):
@@ -144,7 +149,10 @@ class QR_generator:
         """XOR av tall1 og tall2"""
         t1 = int(tall1,2)    # base 2
         t2 = int(tall2,2)    # base 2
-        if padded:
+        if not padded:
+            # Return the bits as string padded to 15 bits with blank spaces
+            return f"{t1 ^ t2:15b}"
+        else:
             pad_len = 15-len(f"{t1 ^ t2:15b}")
             xored = f"{t1 ^ t2:15b}"
             xored = list(xored)
@@ -153,10 +161,12 @@ class QR_generator:
                 xored.pop()
             while len(xored) < 15:
                 xored.append(0)
-            xored = str(xored)
-            return xored
-        # Return the bits as string padded to 15 bits with blank spaces
-        return f"{t1 ^ t2:15b}"
+            xored.reverse()
+            buf = ""
+            for b in xored:
+                buf += str(b)
+            return buf
+        
     
     def mask_format_string(self):
         mask = "10100110111"
@@ -226,6 +236,55 @@ class QR_generator:
                 rute.fill = "black"
             else:
                 rute.fill = "white"
-            rute.fill = "dodgerblue"
+            #rute.fill = "dodgerblue"
             canvas.itemconfig(rute.rect, fill=rute.fill)
             teller += 1
+
+    def draw_data_format(self,canvas):
+        teller = 0
+        for rute in data_type_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if self.data_format[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            #rute.fill = "dodgerblue"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
+    
+    def draw_data_length(self,canvas):
+        teller = 0
+        for rute in data_length_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if self.data_length[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            #rute.fill = "dodgerblue"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
+
+    def draw_data(self,canvas):
+        """Draws the data plus error correction"""
+        teller = 0
+        for rute in data_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            
+            if self.bitstream[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            #rute.fill = "dodgerblue"
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
+            if teller >= len(self.bitstream):
+                break
+    
+    def draw_data_mask(self):
+        pass
