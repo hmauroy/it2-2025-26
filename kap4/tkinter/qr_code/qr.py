@@ -61,11 +61,10 @@ class QR_generator:
     """
     def __init__(self,text="Hei IT2!",bredde=25,rutebredde=15,error_correction=1,mask=5):
         self.bredde = bredde
+        self.mode = 4   # Bytemode
         self.text = text
-        self.rs = reedsolo.RSCodec(8)
+        self.data_length = len(self.text)
         self.bitstream = self.text_to_bits()
-        self.data_format = "0100"
-        self.data_length = self.decimalToBinary(len(self.text))
         self.format_string = None
         self.error_correction = error_correction
         self.mask = mask
@@ -76,19 +75,57 @@ class QR_generator:
         self.grid = self.createGrid()
     
     def text_to_bits(self):
-        text_bytes = list(self.text.encode("utf-8"))
+        # 1) Convert to 8-bit codewords.
+        text_bytes = list(self.text.encode("iso8859-1"))
         print(f"text as array: {text_bytes}")
-        # Encode using Reed-Soloman error correction.
-        encoded_text = self.rs.encode(text_bytes)
+        MAX_CAP = 32 * 8
+        print(f"MAX_CAP = {MAX_CAP}")
+        bitstream = self.decimalToBinary(self.mode,4) + self.decimalToBinary(self.data_length)
+        for byte in text_bytes:
+            bitstream += self.decimalToBinary(byte)
+        print(f"bitstream to pad: {bitstream}")
+        print(f"length bitstream: {len(bitstream)}")
+        # 2) Add padding
+        # If bitstream shorter than max capacity: add up to four 0s on right side og bitstream.
+        missing = MAX_CAP - len(bitstream)
+        if missing > 4:
+            missing = 4
+        for i in range(missing):
+            bitstream += "0"
+        # If bitstream still shorter than max capacity and also not divisible by 8, add 0s to the end. Now the number of bits is N*8. 
+        while len(bitstream) % 8 != 0:
+            bitstream += "0"
+        print(f"Number of bytes = bitstream_len/8={len(bitstream)/8}")
+        # If still to short add 8-bit streams with alternating numbers 236 (11101100) and 17 (00010001) until max capacity length. 
+        odd = True
+        while len(bitstream) < MAX_CAP:
+            if odd:
+                bitstream += "11101100"
+                odd = False
+            else:
+                bitstream += "00010001"
+                odd = True
+        print(f"FINAL number of bytes = bitstream_len/8={len(bitstream)/8}")
+        print(bitstream)
+        # 3) Encode using Reed-Soloman error correction. Version 2 qr-code encodes as one section, not multiple.
+        # Convert to bytes (onliner)
+        byte_data = bytearray(int(bitstream[i:i+8], 2) for i in range(0, len(bitstream), 8))
+        ecc_L = 10
+        ecc_M = 16
+        ecc_Q = 22
+        ecc_H = 28
+        rs = reedsolo.RSCodec(ecc_L)
+        # Encode        
+        encoded_text = rs.encode(byte_data)
         print("R-S Encoded text:")
         print(list(encoded_text))
         # Konverter alle tall til en 8-bit stream:
-        bitstream = ""
+        bitstream_final = ""
         for tall in list(encoded_text):
             tall_byte = self.decimalToBinary(tall)
             for bit in tall_byte:
-                bitstream += bit
-        return bitstream
+                bitstream_final += bit
+        return bitstream_final
         
 
     def createGrid(self):
@@ -124,6 +161,19 @@ class QR_generator:
             rute = self.grid[j][i]
             rute.fill = "red"
             canvas.itemconfig(rute.rect, fill=rute.fill)
+    
+    def drawMask(self,canvas):
+        for rute in data_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if (i * j) % 2 + (i * j) % 3 == 0:
+                if rute.fill == "black":
+                    rute.fill = "white"
+                elif rute.fill == "white":
+                    rute.fill = "black"
+                canvas.itemconfig(rute.rect, fill=rute.fill)
+            
 
     def decimalToBinary(self,tall,n=8):
         output = ""
@@ -233,34 +283,6 @@ class QR_generator:
             i = rute[0]
             rute = self.grid[j][i]
             if self.format_string[teller] == "1":
-                rute.fill = "black"
-            else:
-                rute.fill = "white"
-            #rute.fill = "dodgerblue"
-            canvas.itemconfig(rute.rect, fill=rute.fill)
-            teller += 1
-
-    def draw_data_format(self,canvas):
-        teller = 0
-        for rute in data_type_coordinates:
-            j = rute[1]
-            i = rute[0]
-            rute = self.grid[j][i]
-            if self.data_format[teller] == "1":
-                rute.fill = "black"
-            else:
-                rute.fill = "white"
-            #rute.fill = "dodgerblue"
-            canvas.itemconfig(rute.rect, fill=rute.fill)
-            teller += 1
-    
-    def draw_data_length(self,canvas):
-        teller = 0
-        for rute in data_length_coordinates:
-            j = rute[1]
-            i = rute[0]
-            rute = self.grid[j][i]
-            if self.data_length[teller] == "1":
                 rute.fill = "black"
             else:
                 rute.fill = "white"

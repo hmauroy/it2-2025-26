@@ -276,7 +276,6 @@ data_coordinates = [
     (15,8),
     (16,7),
     (15,7),
-    (15,6),
     (16,5),
     (15,5),
     (16,4),
@@ -305,7 +304,6 @@ data_coordinates = [
     (13,5),
 
     # Down the middle
-    (13,6),
     (14,7),
     (13,7),
     (14,8),
@@ -380,7 +378,6 @@ data_coordinates = [
     (11,8),
     (12,7),
     (11,7),
-    (11,6),
     (12,5),
     (11,5),
     (12,4),
@@ -407,7 +404,6 @@ data_coordinates = [
     (9,4),
     (10,5),
     (9,5),
-    (9,6),
     (10,7),
     (9,7),
     (10,8),
@@ -464,16 +460,12 @@ data_coordinates = [
     (7,9),
 
     # Leftmost parts left of zebra
-    (6,9),
     (5,9),
     (5,10),
-    (6,11),
     (5,11),
     (5,12),
-    (6,13),
     (5,13),
     (5,14),
-    (6,15),
     (5,15),
     (5,16),
     (4,16),
@@ -590,5 +582,13 @@ formatting_data_right = error_correction_BL + masking_version_BL + [
 
 
 if __name__ == "__main__":
-    print(len(coordinates) == len(set(coordinates)))
+    #print(len(coordinates) == len(set(coordinates)))
+    nxn = 21*21
+    fixed_squares = 9*9 + 8*9 + 8*9 + 5*5 + 8
+    print(nxn-fixed_squares)
+    n_data = 8*6 + 8*6 + 2*8 + 2*8 + 16*16 - 5*5
+    v2_data_max_cap = 32*8
+    print(v2_data_max_cap)
+    error_terms = 10*8
+    print(n_data - v2_data_max_cap - error_terms)
 

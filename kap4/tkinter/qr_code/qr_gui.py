@@ -113,14 +113,12 @@ qr.drawDefaultCode(canvas)
 #qr.drawDataRedSquares(canvas)
 qr.create_format_string()
 print(f"format_string error corrected: {qr.mask_format_string()}")
-print(f'111011111000100 masked => {qr.XOR("111011111000100",qr.final_mask,True)}')
 qr.draw_format_string(canvas)
-print(f"data length: {len(qr.text)}: {qr.data_length}")
-qr.draw_data_format(canvas)
-qr.draw_data_length(canvas)
-print(len(qr.bitstream))
-print(qr.bitstream)
 qr.draw_data(canvas)
+qr.drawMask(canvas)
+from qr import data_coordinates
+print(f"len data_coordinates: {len(data_coordinates)}")
+print(f"len bitstream_final: {len(qr.bitstream)}")
 
 
 # Kjører vinduet. Må være nederst i koden.
