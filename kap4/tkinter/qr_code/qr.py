@@ -76,6 +76,22 @@ class QR_generator:
         self.pady = 15
         self.grid = self.createGrid()
     
+    def update_text(self,new_text,canvas):
+        self.text = new_text
+        self.update_code(canvas)
+
+    def update_code(self,canvas):
+        canvas.delete("rute")
+        self.bitstream = self.text_to_bits()
+        self.drawGrid(canvas)
+        self.drawDefaultCode(canvas)
+        self.create_format_string()
+        self.draw_format_string(canvas)
+        #self.drawDataRedSquares(canvas,window)
+        self.draw_data(canvas)
+        self.drawMask0(canvas)
+
+
     def text_to_bits(self):
         # 1) Convert to 8-bit codewords.
         text_bytes = list(self.text.encode("iso8859-1"))
@@ -171,10 +187,9 @@ class QR_generator:
             canvas.itemconfig(rute.rect, fill=rute.fill)
             #last_time = time.time()
             
-    def draw_data(self,canvas,window):
+    def draw_data(self,canvas):
         """Draws the data plus error correction"""
         teller = 0
-        last_time = time.time()
         for rute in data_coordinates:
             j = rute[1]
             i = rute[0]
@@ -185,8 +200,6 @@ class QR_generator:
             else:
                 rute.fill = "white"
             #rute.fill = "dodgerblue"
-            while time.time() - last_time < 0.05:
-                window.update()
             canvas.itemconfig(rute.rect, fill=rute.fill)
             teller += 1
             #last_time = time.time()

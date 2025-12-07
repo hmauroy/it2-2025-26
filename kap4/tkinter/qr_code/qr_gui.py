@@ -36,10 +36,12 @@ overskrift.pack()
 
 def lesKnapp():
     global input1, utskrift, canvas, bredde
-    # Gjør om te
-    qr.text_to_bits(input1.get())
+    text = input1.get()
+    
+    
     
 def handle_klikk(event):
+    global qr
     #print("klikket")
     x = event.x
     y = event.y
@@ -54,11 +56,21 @@ def handle_klikk(event):
                 #canvas.delete(rute.id)
                 #rute.tegn(canvas)
 
+def on_entry_change(*args):
+    # This function is called whenever the Entry content changes
+    current_value = entry_var.get()
+    print(f"Entry changed to: {current_value}")
+    
 
 # Legger til et inputfelt (Entry)
-input1 = tk.Entry(window)
+# Lager en StringVar for å tracke inputfeltets verdi.
+entry_var = tk.StringVar()
+# Fester en callback-funksjon på variabelen.
+entry_var.trace_add("write", on_entry_change)
+# Legger til selve feltet.
+input1 = tk.Entry(window,textvariable=entry_var)
 input1.configure(
-    width=12,
+    width=32,
     font = ("Aptos", 14),
     fg="black",
     bg=tekst_bakgrunn,
@@ -107,17 +119,10 @@ canvas.pack(expand=True)
 
 canvas.bind("<Button-1>", handle_klikk)
 
-qr = QR_generator(text="Henrik Charlsen Mauroy",error_correction=1,mask=0)
-qr.drawGrid(canvas)
-qr.drawDefaultCode(canvas)
-qr.create_format_string()
-print(f"format_string error corrected: {qr.mask_format_string()}")
-qr.draw_format_string(canvas)
-#qr.drawDataRedSquares(canvas,window)
-qr.draw_data(canvas,window)
-qr.drawMask0(canvas)
-print(qr.bitstream)
 
+# Here we start the program.
+qr = QR_generator(text="HEI IT2!",error_correction=1,mask=0)
+qr.update_code(canvas)
 
 
 # Kjører vinduet. Må være nederst i koden.
