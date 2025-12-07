@@ -2,13 +2,14 @@
 from rute_definisjoner import coordinates, data_coordinates, formatting_data_upper_left, formatting_data_right
 from rute_definisjoner import data_type_coordinates, data_length_coordinates
 import reedsolo
+import time
 
 class Rute:
     def __init__(self,i,j,x,y,bredde,tag="rute"):
         self.x = x
         self.y = y
         self.fill = "white"
-        self.outline = "black"
+        self.outline = ""
         self.w = bredde
         self.tag = tag
         self.id = f"{i},{j}"
@@ -65,6 +66,7 @@ class QR_generator:
         self.text = text
         self.data_length = len(self.text)
         self.bitstream = self.text_to_bits()
+        self.ec_terms = None
         self.format_string = None
         self.error_correction = error_correction
         self.mask = mask
@@ -78,7 +80,7 @@ class QR_generator:
         # 1) Convert to 8-bit codewords.
         text_bytes = list(self.text.encode("iso8859-1"))
         print(f"text as array: {text_bytes}")
-        MAX_CAP = 32 * 8
+        MAX_CAP = 34 * 8
         print(f"MAX_CAP = {MAX_CAP}")
         bitstream = self.decimalToBinary(self.mode,4) + self.decimalToBinary(self.data_length)
         for byte in text_bytes:
@@ -110,6 +112,8 @@ class QR_generator:
         # 3) Encode using Reed-Soloman error correction. Version 2 qr-code encodes as one section, not multiple.
         # Convert to bytes (onliner)
         byte_data = bytearray(int(bitstream[i:i+8], 2) for i in range(0, len(bitstream), 8))
+        codewords_list = [int(bitstream[i:i+8], 2) for i in range(0, len(bitstream), 8)]
+        print(f"codewords_list: {codewords_list}")
         ecc_L = 10
         ecc_M = 16
         ecc_Q = 22
@@ -154,20 +158,47 @@ class QR_generator:
             rute.fill = "black"
             canvas.itemconfig(rute.rect, fill=rute.fill)
     
-    def drawDataRedSquares(self,canvas):
+    def drawDataRedSquares(self,canvas,window):
+        last_time = time.time()
         for rute in data_coordinates:
             j = rute[1]
             i = rute[0]
             rute = self.grid[j][i]
             rute.fill = "red"
+            while time.time() - last_time < 0.5:
+                # Wait for some time inside this loop.
+                window.update()
             canvas.itemconfig(rute.rect, fill=rute.fill)
-    
-    def drawMask(self,canvas):
+            #last_time = time.time()
+            
+    def draw_data(self,canvas,window):
+        """Draws the data plus error correction"""
+        teller = 0
+        last_time = time.time()
         for rute in data_coordinates:
             j = rute[1]
             i = rute[0]
             rute = self.grid[j][i]
-            if (i * j) % 2 + (i * j) % 3 == 0:
+            
+            if self.bitstream[teller] == "1":
+                rute.fill = "black"
+            else:
+                rute.fill = "white"
+            #rute.fill = "dodgerblue"
+            while time.time() - last_time < 0.05:
+                window.update()
+            canvas.itemconfig(rute.rect, fill=rute.fill)
+            teller += 1
+            #last_time = time.time()
+            if teller >= len(self.bitstream):
+                break
+    
+    def drawMask0(self,canvas):
+        for rute in data_coordinates:
+            j = rute[1]
+            i = rute[0]
+            rute = self.grid[j][i]
+            if (i + j) % 2  == 0:
                 if rute.fill == "black":
                     rute.fill = "white"
                 elif rute.fill == "white":
@@ -290,23 +321,4 @@ class QR_generator:
             canvas.itemconfig(rute.rect, fill=rute.fill)
             teller += 1
 
-    def draw_data(self,canvas):
-        """Draws the data plus error correction"""
-        teller = 0
-        for rute in data_coordinates:
-            j = rute[1]
-            i = rute[0]
-            rute = self.grid[j][i]
-            
-            if self.bitstream[teller] == "1":
-                rute.fill = "black"
-            else:
-                rute.fill = "white"
-            #rute.fill = "dodgerblue"
-            canvas.itemconfig(rute.rect, fill=rute.fill)
-            teller += 1
-            if teller >= len(self.bitstream):
-                break
     
-    def draw_data_mask(self):
-        pass

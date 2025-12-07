@@ -107,18 +107,17 @@ canvas.pack(expand=True)
 
 canvas.bind("<Button-1>", handle_klikk)
 
-qr = QR_generator(text="HEI IT2!",error_correction=1,mask=0)
+qr = QR_generator(text="Henrik Charlsen Mauroy",error_correction=1,mask=0)
 qr.drawGrid(canvas)
 qr.drawDefaultCode(canvas)
-#qr.drawDataRedSquares(canvas)
 qr.create_format_string()
 print(f"format_string error corrected: {qr.mask_format_string()}")
 qr.draw_format_string(canvas)
-qr.draw_data(canvas)
-qr.drawMask(canvas)
-from qr import data_coordinates
-print(f"len data_coordinates: {len(data_coordinates)}")
-print(f"len bitstream_final: {len(qr.bitstream)}")
+#qr.drawDataRedSquares(canvas,window)
+qr.draw_data(canvas,window)
+qr.drawMask0(canvas)
+print(qr.bitstream)
+
 
 
 # Kjører vinduet. Må være nederst i koden.
