@@ -82,10 +82,12 @@ class QR_generator:
 
     def update_code(self,canvas):
         canvas.delete("rute")
+        self.data_length = len(self.text)
         self.bitstream = self.text_to_bits()
         self.drawGrid(canvas)
         self.drawDefaultCode(canvas)
         self.create_format_string()
+        self.mask_format_string()
         self.draw_format_string(canvas)
         #self.drawDataRedSquares(canvas,window)
         self.draw_data(canvas)

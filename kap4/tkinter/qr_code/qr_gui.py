@@ -37,6 +37,7 @@ overskrift.pack()
 def lesKnapp():
     global input1, utskrift, canvas, bredde
     text = input1.get()
+    qr.update_text(text,canvas)
     
     
     
@@ -60,6 +61,7 @@ def on_entry_change(*args):
     # This function is called whenever the Entry content changes
     current_value = entry_var.get()
     print(f"Entry changed to: {current_value}")
+    qr.update_text(current_value,canvas)
     
 
 # Legger til et inputfelt (Entry)
