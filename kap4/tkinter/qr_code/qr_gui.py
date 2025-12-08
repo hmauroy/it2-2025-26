@@ -37,6 +37,8 @@ overskrift.pack()
 def lesKnapp():
     global input1, utskrift, canvas, bredde
     text = input1.get()
+    print("Ny tekst:")
+    print(f"'{text}'")
     qr.update_text(text,canvas)
     
     

@@ -82,6 +82,7 @@ class QR_generator:
 
     def update_code(self,canvas):
         canvas.delete("rute")
+        self.grid = self.createGrid()
         self.data_length = len(self.text)
         self.bitstream = self.text_to_bits()
         self.drawGrid(canvas)
@@ -161,6 +162,7 @@ class QR_generator:
                 x = i * self.rutebredde + self.padx
                 grid[j].append(Rute(i,j,x,y,self.rutebredde))
         return grid
+
 
     def drawGrid(self,canvas):
         for rad in self.grid:
