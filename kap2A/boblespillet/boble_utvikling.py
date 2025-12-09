@@ -1,21 +1,31 @@
 """
 Klassedefinisjoner for bobler og underklassene av disse.
 """
+from random import random
 
 class Ring:
+    canvas = None
     """Default klasse for å tegne en ring."""
     def __init__(self,r,x,y):
-        pass
+        self.R = r
+        self.x = x
+        self.y = y
+        self.canvas = Ring.canvas
+        self.tag = "ring"
+        self.outline = "white"
 
     def tegn(self):
         """Tegn ringen i canvas."""
-        pass
+        self.canvas.create_oval(self.x-self.R,self.y-self.R,
+        self.x+self.R,self.y+self.R, outline=self.outline,tags=self.tag)
 
 class Boble(Ring):
-    def __init__(self,r,x,y):
+    def __init__(self,r,x,y,fart):
         super().__init__(r,x,y)
         self.type = "boble"
-        pass
+        self.dx = random() * fart
+        if self.dx == 0:
+            self.dx = 0.1
 
     def kollisjon(self,objekt2):
         """
@@ -28,7 +38,7 @@ class Boble(Ring):
 
     def oppdater(self):
         "Oppdater fart, posisjon, sjekk kollisjon, tegn"
-        pass
+        self.x -= self.dx
 
     def sprekk_boble(self):
         """
