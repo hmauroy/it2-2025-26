@@ -8,7 +8,7 @@ window.lift()
 window.title("Boblespillet")
 window.focus_force()
 bredde = 800
-hoyde = 600
+hoyde = 700
 canvas_height = hoyde-150
 canvas_width = bredde
 window.minsize(bredde,hoyde)
@@ -108,12 +108,18 @@ ymax = canvas_height
 Ring.canvas = canvas
 
 bobler = []
-for i in range(10):
-    bobler.append(Boble(randint(5,20),x=randint(xmin,xmax),y=randint(ymin,ymax),fart=1))
+teller = 0
+R_MIN = 5
+R_MAX = 20
+N_max = 10
+for i in range(N_max):
+    bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymin,ymax),fart=1,id=teller))
+    teller += 1
 
 isRunning = True
 lastTime = time.time()
-
+start_time = time.time()
+slette_indexer = []
 
 while isRunning:
     if time.time() - lastTime >= 0.01:
@@ -121,6 +127,28 @@ while isRunning:
         for boble in bobler:
             boble.oppdater()
             boble.tegn()
+        # Slett bobler utenfor skjermen. Går baklengs pga. skal poppe så indekser ikke forskyves.
+        for i in range(len(bobler)-1,-1,-1):
+            boble = bobler[i]
+            if not boble.levende:
+                bobler.pop(i)
+        # Lag nye bobler jevnlig for å fylle på for de som ble slettet.
+        while len(bobler) < N_max:
+            bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmax+R_MAX,xmax+2*R_MAX),y=randint(ymin,ymax),fart=1,id=teller))
+            teller += 1
+        # Sjekk kollisjoner mellom boblene. 
+        # Tar hver boble og sjekker for kollisjon med alle andre.
+        for boble in bobler:
+            # Sjekk om boblen allerede skal slås sammen med en annen.
+            if boble.merge == False:
+                for boble2 in bobler:
+                    # Sjekker kollisjon. Den funksjonen setter merge-flagget på begge boblene.
+                    boble.kollisjon(boble2)
+        # Slett alle bobler som ble kollidert mot.
+        for bodle in bobler:
+            # 
+            pass
+
         lastTime = time.time()
     window.update()
 

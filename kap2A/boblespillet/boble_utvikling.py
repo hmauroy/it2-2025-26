@@ -20,12 +20,14 @@ class Ring:
         self.x+self.R,self.y+self.R, outline=self.outline,tags=self.tag)
 
 class Boble(Ring):
-    def __init__(self,r,x,y,fart):
+    def __init__(self,r,x,y,fart,id):
         super().__init__(r,x,y)
         self.type = "boble"
         self.dx = random() * fart
         if self.dx == 0:
             self.dx = 0.1
+        self.id = id
+        self.levende = True
 
     def kollisjon(self,objekt2):
         """
@@ -39,6 +41,8 @@ class Boble(Ring):
     def oppdater(self):
         "Oppdater fart, posisjon, sjekk kollisjon, tegn"
         self.x -= self.dx
+        if self.x + self.R < 0:
+            self.levende = False
 
     def sprekk_boble(self):
         """
