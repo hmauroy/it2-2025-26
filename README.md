@@ -5,3 +5,4 @@
 ---
 
 Et avsnitt med *uthevet tekst*.
+### Python er kodespråket og tkinter er grafikkbiblioteket.
