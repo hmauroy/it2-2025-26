@@ -7,3 +7,4 @@
 Et avsnitt med *uthevet tekst*.
 
 # Kan man fortsette å endre fra andre branches?
+### Python er kodespråket og tkinter er grafikkbiblioteket.
