@@ -145,7 +145,7 @@ while isRunning:
                     # Sjekker kollisjon. Den funksjonen setter merge-flagget på begge boblene.
                     boble.kollisjon(boble2)
         # Slett alle bobler som ble kollidert mot.
-        for bodle in bobler:
+        for boble in bobler:
             # 
             pass
 
