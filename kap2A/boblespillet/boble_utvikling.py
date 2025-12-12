@@ -96,8 +96,8 @@ class Hindring:
 
     def kollisjon(self,objekt2):
         """
-        Hindringer har en annen algorite for å sjekke for kollisjon som er mer
-        komplisert enn Pythagoras som gjelder for sirkler (boblene).
+        Hindringer har en annen algorite for å sjekke for kollisjon som ikke 
+        benytter Pythagoras som gjelder for kollisjon mellom sirkler (boblene).
 
         """
     
