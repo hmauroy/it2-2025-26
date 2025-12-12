@@ -138,6 +138,7 @@ while isRunning:
             teller += 1
         # Sjekk kollisjoner mellom boblene. 
         # Tar hver boble og sjekker for kollisjon med alle andre.
+        """
         for boble in bobler:
             # Sjekk om boblen allerede skal slås sammen med en annen.
             if boble.merge == False:
@@ -148,6 +149,7 @@ while isRunning:
         for boble in bobler:
             # 
             pass
+            """
 
         lastTime = time.time()
     window.update()
