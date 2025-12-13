@@ -56,7 +56,7 @@ class Boble(Ring):
     def beregn_radius(self,areal):
         """
         A = pi * r^2
-        r = sqrt(A(pi))
+        r = sqrt(A/pi))
         """
         self.R = math.sqrt(areal/math.pi)
 

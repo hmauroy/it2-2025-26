@@ -1,11 +1,12 @@
 """
 Klassedefinisjoner for bobler og underklassene av disse.
 """
-from random import random
+from random import random, randint
 import math
 
 class Ring:
     canvas = None
+    farger = ["chartreuse","yellow","orange","red","magenta","peachpuff","black"]
     """Default klasse for å tegne en ring."""
     def __init__(self,r,x,y):
         self.R = r
@@ -24,13 +25,14 @@ class Boble(Ring):
     def __init__(self,r,x,y,fart,id):
         super().__init__(r,x,y)
         self.type = "boble"
-        self.dx = random() * fart
-        if self.dx == 0:
-            self.dx = 0.1
-        self.dy = 0
+        self.dy = random() * fart
+        if self.dy == 0:
+            self.dy = 0.1
+        self.dx = 0
         self.id = id
         self.levende = True
         self.merge = False
+        self.mergeTeller = 0
 
     def kollisjon(self,objekt2):
         """
@@ -44,36 +46,48 @@ class Boble(Ring):
             dx = self.x - objekt2.x
             dy = self.y - objekt2.y
             d = math.sqrt(dx**2 + dy**2)
-            if d <= self.R + objekt2.R:
+            if d <= self.R + objekt2.R and randint(1,100) == 42:
                 # Kollisjon.
-                print(f"kollisjon: {self.x},{self.y}")
+                #print(f"kollisjon: {self.x},{self.y}")
                 self.merge = True
+                self.mergeTeller += 1
+                if self.mergeTeller >= len(Boble.farger)-1:
+                    self.mergeTeller = len(Boble.farger)-1
+                self.outline = Boble.farger[self.mergeTeller-1]
+                self.outline = "chartreuse"
                 objekt2.merge = True
                 if self.R >= objekt2.R:
                     # Spiser mindre boble.
-                    print("self spiser mindre boble")
+                    #print("self spiser mindre boble")
                     objekt2.levende = False
                     self.ny_radius(objekt2)
                     self.beregn_ny_posisjon(objekt2)
+                    #self.dy = 0.1
                     self.beregn_ny_fart(objekt2)
                 else:
                     self.levende = False
                     objekt2.ny_radius(self)
                     objekt2.beregn_ny_posisjon(self)
+                    #objekt2.dy = 0.1
                     objekt2.beregn_ny_fart(self)
+                    objekt2.outline = "red"
             else:
                 self.merge = False
         
 
     def oppdater(self):
         "Oppdater fart, posisjon, sjekk kollisjon, tegn"
-        self.x -= self.dx
-        if self.x + self.R < 0:
+        self.y -= self.dy
+        if self.y + self.R < 0:
             self.levende = False
+        # Reseter merge flagget
+        self.merge = False
 
     def ny_radius(self,objekt2):
         areal = self.areal() + objekt2.areal()
-        self.r = math.sqrt(areal / math.pi)
+        self.R = math.sqrt(areal / math.pi)
+        if self.R >= 100:
+            self.levende = False
     
     def beregn_ny_posisjon(self,objekt2):
         self.x = (self.x + objekt2.x )/2

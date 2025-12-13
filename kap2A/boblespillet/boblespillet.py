@@ -134,20 +134,20 @@ while isRunning:
                 bobler.pop(i)
         # Lag nye bobler jevnlig for å fylle på for de som ble slettet.
         while len(bobler) < N_max:
-            bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmax+R_MAX,xmax+2*R_MAX),y=randint(ymin,ymax),fart=8,id=teller))
+            bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymax+R_MAX,ymax+2*R_MAX),fart=5,id=teller))
             teller += 1
         # Sjekk kollisjoner mellom boblene. 
         # Tar hver boble og sjekker for kollisjon med alle andre.
         for boble in bobler:
             # Hopp over bobler som allerede er valgt å slås sammen med en annen.
-            if boble.merge == False:
+            if boble.merge == False and boble.y < 0.8*hoyde-boble.R:
                 for boble2 in bobler:
-                    boble.kollisjon(boble2)
-                    #if boble2.merge == False:
+                    #boble.kollisjon(boble2)
+                    if boble2.merge == False:
                         # Sjekker kollisjon som setter merge-flagget på begge boblene.
                         # Og levende = False for den minste.
-                     #   boble.kollisjon(boble2)
-        # Slett alle bobler som ble kollidert mot.
+                        boble.kollisjon(boble2)
+        # Slett alle bobler markert ikke levende.
         for j in range(len(bobler)-1,-1,-1):
             boble = bobler[j]
             # Slett bobler med levende == False
