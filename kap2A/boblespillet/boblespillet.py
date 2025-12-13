@@ -111,9 +111,9 @@ bobler = []
 teller = 0
 R_MIN = 5
 R_MAX = 20
-N_max = 10
+N_max = 20
 for i in range(N_max):
-    bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymin,ymax),fart=1,id=teller))
+    bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymin,ymax),fart=5,id=teller))
     teller += 1
 
 isRunning = True
@@ -138,18 +138,21 @@ while isRunning:
             teller += 1
         # Sjekk kollisjoner mellom boblene. 
         # Tar hver boble og sjekker for kollisjon med alle andre.
-        """
         for boble in bobler:
-            # Sjekk om boblen allerede skal slås sammen med en annen.
+            # Hopp over bobler som allerede er valgt å slås sammen med en annen.
             if boble.merge == False:
                 for boble2 in bobler:
-                    # Sjekker kollisjon. Den funksjonen setter merge-flagget på begge boblene.
-                    boble.kollisjon(boble2)
+                    if boble2.merge == False:
+                        # Sjekker kollisjon som setter merge-flagget på begge boblene.
+                        # Og levende = False for den minste.
+                        boble.kollisjon(boble2)
         # Slett alle bobler som ble kollidert mot.
-        for boble in bobler:
-            # 
-            pass
-            """
+        for j in range(len(bobler)-1,-1,-1):
+            boble = bobler[j]
+            # Slett bobler med levende == False
+            if not boble.levende:
+                bobler.pop(j)
+            
 
         lastTime = time.time()
     window.update()

@@ -34,41 +34,44 @@ class Boble(Ring):
     def kollisjon(self,objekt2):
         """
         Ved kollisjon med en annen boble skal den største boblen spise den lille. 
-        Ny posisjon blir gjennomsnitet av x,y-pos for begge.
-        Hvis kollisjon med hindring skal boblen sprekke.
+        Det er den største boblen som overlever så den lille skal slettes.
+        merge-flagget blir satt til True på den store.
+        levende-flagget blir satt False på den lille.
+        Ny posisjon blir gjennomsnittet av x,y-pos for begge.
+        Hvis kollisjon med hindring skal boblen sprekke i mange småbobler.
         Hva slags objekt det kollideres mot må sjekkes før kollisjon. Hvis hindring må hindring.kollisjon() benyttes.
         """
+        # Sjekker kun kollisjon hvis det ikke er seg selv man kolliderer mot.
         if not self == objekt2:
-            # Sjekk avstand mellom senter av boblene.
+            # Pythagoras
             dx = self.x - objekt2.x
             dy = self.y - objekt2.y
-            d = math.sqrt(dx**2 + dy**2)
-            if d <= self.R + objekt2.R:
-                # Kollisjon.
-                self.merge = True
-                objekt2.merge = True
+            if math.sqrt(dx**2 + dy**2) < self.R + objekt2.R:
+                # Kollisjon
                 if self.R > objekt2.R:
-                    # Spiser mindre boble.
-                    print("spiser mindre boble")
-                    objekt2.levende = False
-                    self.ny_radius(objekt2)
-                else:
-                    self.levende = False
-                    objekt2.ny_radius(self)
-        
+                    self.merge = True
+                    self.beregn_radius(self.areal() + objekt2.areal())
+                    self.beregn_ny_posisjon(objekt2)
+    
+    def beregn_radius(self,areal):
+        """
+        A = pi * r^2
+        r = sqrt(A(pi))
+        """
+        self.R = math.sqrt(areal/math.pi)
+
+    def beregn_ny_posisjon(self,objekt2):
+        self.x = (self.x + objekt2.x )/2
+        self.y = (self.y + objekt2.y )/2
+
+    def areal(self):
+        return math.pi * self.R**2
 
     def oppdater(self):
         "Oppdater fart, posisjon, sjekk kollisjon, tegn"
         self.x -= self.dx
         if self.x + self.R < 0:
             self.levende = False
-
-    def ny_radius(self,objekt2):
-        areal = self.areal() + objekt2.areal()
-        self.r = math.sqrt(areal / math.pi)
-
-    def areal(self):
-        return math.pi*self.R**2
 
     def sprekk_boble(self):
         """
@@ -122,8 +125,8 @@ class Hindring:
 
     def kollisjon(self,objekt2):
         """
-        Hindringer har en annen algorite for å sjekke for kollisjon som ikke 
-        benytter Pythagoras som gjelder for kollisjon mellom sirkler (boblene).
+        Hindringer har en annen algorite for å sjekke for kollisjon som er mer
+        komplisert enn Pythagoras som gjelder for sirkler (boblene).
 
         """
     
