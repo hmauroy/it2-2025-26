@@ -27,6 +27,7 @@ class Boble(Ring):
         self.dx = random() * fart
         if self.dx == 0:
             self.dx = 0.1
+        self.dy = 0
         self.id = id
         self.levende = True
         self.merge = False
@@ -45,16 +46,23 @@ class Boble(Ring):
             d = math.sqrt(dx**2 + dy**2)
             if d <= self.R + objekt2.R:
                 # Kollisjon.
+                print(f"kollisjon: {self.x},{self.y}")
                 self.merge = True
                 objekt2.merge = True
-                if self.R > objekt2.R:
+                if self.R >= objekt2.R:
                     # Spiser mindre boble.
-                    print("spiser mindre boble")
+                    print("self spiser mindre boble")
                     objekt2.levende = False
                     self.ny_radius(objekt2)
+                    self.beregn_ny_posisjon(objekt2)
+                    self.beregn_ny_fart(objekt2)
                 else:
                     self.levende = False
                     objekt2.ny_radius(self)
+                    objekt2.beregn_ny_posisjon(self)
+                    objekt2.beregn_ny_fart(self)
+            else:
+                self.merge = False
         
 
     def oppdater(self):
@@ -66,6 +74,14 @@ class Boble(Ring):
     def ny_radius(self,objekt2):
         areal = self.areal() + objekt2.areal()
         self.r = math.sqrt(areal / math.pi)
+    
+    def beregn_ny_posisjon(self,objekt2):
+        self.x = (self.x + objekt2.x )/2
+        self.y = (self.y + objekt2.y )/2
+    
+    def beregn_ny_fart(self,objekt2):
+        self.dx = (self.dx + objekt2.dx)/2
+        self.dy = (self.dy + objekt2.dy)/2
 
     def areal(self):
         return math.pi*self.R**2
