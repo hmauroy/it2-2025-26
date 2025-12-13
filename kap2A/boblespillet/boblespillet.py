@@ -134,7 +134,7 @@ while isRunning:
                 bobler.pop(i)
         # Lag nye bobler jevnlig for å fylle på for de som ble slettet.
         while len(bobler) < N_max:
-            bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymax+R_MAX,ymax+2*R_MAX),fart=5,id=teller))
+            bobler.append(Boble(randint(R_MIN,R_MAX),x=randint(xmin,xmax),y=randint(ymax+R_MAX,ymax+2*R_MAX),fart=2,id=teller))
             teller += 1
         # Sjekk kollisjoner mellom boblene. 
         # Tar hver boble og sjekker for kollisjon med alle andre.
