@@ -157,7 +157,6 @@ class Hindring:
         """
         Hindringer har en annen algorite for å sjekke for kollisjon som ikke 
         benytter Pythagoras som gjelder for kollisjon mellom sirkler (boblene).
-
         """
     
 
