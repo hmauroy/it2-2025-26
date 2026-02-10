@@ -244,6 +244,15 @@ targets = [
     [bredde/2,400],
     [bredde/2,10],
 ]
+
+targets = [
+    [200,267],
+    [400,400],
+    [283,48]
+
+]
+
+
 teller = 0
 
 while isRunning:

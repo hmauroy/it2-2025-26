@@ -9,10 +9,11 @@ hoyde = 500
 window.minsize(bredde, hoyde)
 window.configure(background="#0F0F64")
 
-bilde = Image.open("kirkulator.jpg")
-bilde = bilde.resize((700, 150))
-tk_bilde = ImageTk.PhotoImage(bilde)
-label = tk.Label(window, image=tk_bilde, bg="gold", bd = 12, relief="ridge")
+#bilde = Image.open("kirkulator.jpg")
+#bilde = bilde.resize((700, 150))
+#tk_bilde = ImageTk.PhotoImage(bilde)
+label = tk.Label(window, bg="gold", bd = 12, relief="ridge")
+#label = tk.Label(window, image=tk_bilde, bg="gold", bd = 12, relief="ridge")
 label.pack()
 
 topp = tk.Frame(window, bg="darkgreen", bd = 12, relief="flat")

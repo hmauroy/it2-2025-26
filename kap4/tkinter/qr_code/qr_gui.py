@@ -63,7 +63,12 @@ def on_entry_change(*args):
     # This function is called whenever the Entry content changes
     current_value = entry_var.get()
     print(f"Entry changed to: {current_value}")
-    qr.update_text(current_value,canvas)
+    if len(current_value) > 32:
+        qr.update_text(current_value[:32],canvas)
+        utskrift["text"] = f"Antall tegn igjen: 0"
+    else:
+        utskrift["text"] = f"Antall tegn igjen: {32-len(current_value)}"
+        qr.update_text(current_value,canvas)
     
 
 # Legger til et inputfelt (Entry)
@@ -81,6 +86,16 @@ input1.configure(
     insertbackground = "black")
 input1.pack()
 
+# Lager utskrift der resultatet skal havne
+utskrift = tk.Label()
+utskrift["text"] = f"Antall tegn igjen: 0"
+utskrift.configure(
+    font = ("Aptos", 8),
+    foreground="black",
+    background=tekst_bakgrunn
+)
+utskrift.pack()
+
 # Knapp
 knapp = tk.Button(window)
 knapp.configure(
@@ -97,17 +112,6 @@ mellomrom.configure(
     bg=vindu_bakgrunn
 )
 mellomrom.pack()
-
-
-# Lager utskrift der resultatet skal havne
-utskrift = tk.Label()
-utskrift["text"] = "Resultat..."
-utskrift.configure(
-    font = ("Aptos", 14),
-    foreground="black",
-    background=tekst_bakgrunn
-)
-utskrift.pack()
 
 
 # Lager et canvas der vi kan tegne strekkodene som sorte og smale rektangler

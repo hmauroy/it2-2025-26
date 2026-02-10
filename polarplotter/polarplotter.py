@@ -221,7 +221,7 @@ penn = Penn(5, x_start, y_start, canvas_width)
 
 isRunning = True
 last_time = time.time()
-fps = 3
+fps = 10
 dt = int(1000/fps)
 
 motorRunning = False
@@ -277,7 +277,6 @@ while isRunning:
         teller += 1
         if teller >= len(targets):
             isRunning = False
-        
     
     """
     else:

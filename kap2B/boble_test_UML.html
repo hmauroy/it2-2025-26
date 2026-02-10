@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Klassediagram - Boble</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 600px;
+        }
+        
+        .uml-class {
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+        
+        .class-name {
+            background: #4a5568;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .inheritance {
+            background: #e2e8f0;
+            padding: 8px 15px;
+            text-align: center;
+            font-style: italic;
+            color: #4a5568;
+            border-bottom: 1px solid #cbd5e0;
+        }
+        
+        .section {
+            padding: 15px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .attribute, .method {
+            padding: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #1a202c;
+        }
+        
+        .type {
+            color: #3182ce;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>UML Klassediagram</h1>
+        <div id="umlDiagram"></div>
+    </div>
+
+    <script>
+        const classData = {
+    "name": "Boble",
+    "parent": "Ring",
+    "attributes": [
+        {
+            "name": "type",
+            "type": "str"
+        },
+        {
+            "name": "dy",
+            "type": "Any"
+        },
+        {
+            "name": "dx",
+            "type": "int"
+        },
+        {
+            "name": "id",
+            "type": "Any"
+        },
+        {
+            "name": "levende",
+            "type": "bool"
+        },
+        {
+            "name": "merge",
+            "type": "bool"
+        },
+        {
+            "name": "mergeTeller",
+            "type": "int"
+        },
+        {
+            "name": "dy",
+            "type": "float"
+        }
+    ],
+    "methods": [
+        {
+            "name": "__init__",
+            "params": "r, x, y, fart, id",
+            "returnType": "None"
+        },
+        {
+            "name": "kollisjon",
+            "params": "objekt2",
+            "returnType": "None"
+        },
+        {
+            "name": "oppdater",
+            "params": "",
+            "returnType": "None"
+        },
+        {
+            "name": "oppdater_helper",
+            "params": "",
+            "returnType": "None"
+        },
+        {
+            "name": "ny_radius",
+            "params": "objekt2",
+            "returnType": "None"
+        },
+        {
+            "name": "beregn_ny_posisjon",
+            "params": "objekt2",
+            "returnType": "None"
+        },
+        {
+            "name": "beregn_ny_fart",
+            "params": "objekt2",
+            "returnType": "None"
+        },
+        {
+            "name": "areal",
+            "params": "",
+            "returnType": "None"
+        },
+        {
+            "name": "sprekk_boble",
+            "params": "",
+            "returnType": "None"
+        }
+    ]
+};
+
+        function generateUML(data) {
+            const diagram = document.getElementById('umlDiagram');
+            
+            let html = '<div class="uml-class">';
+            
+            html += `<div class="class-name">${data.name}</div>`;
+            
+            if (data.parent) {
+                html += `<div class="inheritance">extends ${data.parent}</div>`;
+            }
+            
+            if (data.attributes && data.attributes.length > 0) {
+                html += '<div class="section">';
+                html += '<div class="section-title">Attributter</div>';
+                data.attributes.forEach(attr => {
+                    html += `<div class="attribute">
+                        ${attr.name}: <span class="type">${attr.type}</span>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            
+            if (data.methods && data.methods.length > 0) {
+                html += '<div class="section">';
+                html += '<div class="section-title">Metoder</div>';
+                data.methods.forEach(method => {
+                    const params = method.params ? `(${method.params})` : '()';
+                    html += `<div class="method">
+                        ${method.name}${params}: <span class="type">${method.returnType}</span>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            diagram.innerHTML = html;
+        }
+
+        generateUML(classData);
+    </script>
+</body>
+</html>

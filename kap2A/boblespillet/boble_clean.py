@@ -1,26 +1,35 @@
 """
 Klassedefinisjoner for bobler og underklassene av disse.
 """
+from random import random
 
 class Ring:
+    canvas = None
     """Default klasse for å tegne en ring."""
     def __init__(self,r,x,y):
-        pass
+        self.R = r
+        self.x = x
+        self.y = y
+        self.canvas = Ring.canvas
+        self.tag = "ring"
+        self.outline = "white"
 
     def tegn(self):
         """Tegn ringen i canvas."""
-        pass
+        self.canvas.create_oval(self.x-self.R,self.y-self.R,
+        self.x+self.R,self.y+self.R, outline=self.outline,tags=self.tag)
 
 class Boble(Ring):
-    def __init__(self,r,x,y):
+    def __init__(self,r,x,y,fart,id):
         super().__init__(r,x,y)
-        pass
+        self.type = "boble"
 
     def kollisjon(self,objekt2):
         """
         Ved kollisjon med en annen boble skal den største boblen spise den lille. 
         Ny posisjon blir gjennomsnitet av x,y-pos for begge.
         Hvis kollisjon med hindring skal boblen sprekke.
+        Hva slags objekt det kollideres mot må sjekkes før kollisjon. Hvis hindring må hindring.kollisjon() benyttes.
         """
         pass
 
@@ -40,6 +49,7 @@ class Boble(Ring):
 class Helt(Boble):
     def __init__(self, r, x, y):
         super().__init__(r, x, y)
+        self.type = "helt"
         self.poeng = 0
     
     def sett_ny_fart(self,dx,dy):
@@ -57,6 +67,7 @@ class Helt(Boble):
 class Fiende(Boble):
     def __init__(self, r, x, y):
         super().__init__(r, x, y)
+        self.type = "fiende"
     
     def oppdater(self):
         """
@@ -67,8 +78,20 @@ class Fiende(Boble):
         pass
 
 class Hindring:
-    """Det finnes hindringer i vannet som dukker opp"""
-    def __init__(self):
+    """
+    Det finnes hindringer i vannet som dukker opp. 
+    Disse er kvadratiske for enkelthets skyld.
+    Kan være mangekanter hvis ønskelig.
+    """
+    def __init__(self,a):
+        self.type = "hindring"
         pass
+
+    def kollisjon(self,objekt2):
+        """
+        Hindringer har en annen algorite for å sjekke for kollisjon som ikke 
+        benytter Pythagoras som gjelder for kollisjon mellom sirkler (boblene).
+
+        """
     
 
