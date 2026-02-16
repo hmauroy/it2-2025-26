@@ -48,7 +48,6 @@ def lesKnapp():
     # Plukker ut kun de 12 første sifre pga. siste blir kalkulert.
     tall_streng = tall_streng[0:12]
     binary_seq, checksum = generateBarcode(tall_streng)
-    #print(binary_seq)
     x = 50
     y = 80
     dx = 3
@@ -90,25 +89,19 @@ def lag_bar(x,y,width=3,height=140,fill="black"):
 def lag_barcode_text(tall_streng, check, x, y, dx):
     global canvas, bredde
     canvas.delete("barcode_text")
-    if len(tall_streng) == 12:
-        tall_streng += str(check)
-    barcode_width = 95 * dx
-    myFont = "Futura"
-    myFont = "Helvetica"
+    """
+    Her legger du inn tallene fra tekstvariabelen tall_streng og check.
+    1) Det første sifferet må være plassert til venstre for start-markørene.
+    2) Hvert siffer har 7 streker å være innenfor.
+
+    Syntaks for å lage tekst i canvas. Bruker egendefinert font ved å bruke to variabler.
+    x og y er koordinatene for plassering.
+
     myFont = "Monospace"
-    fontSize = 20
-    x = int( (bredde / 2) - (barcode_width / 2) ) - (dx * 4)
-    # Skriver teksten hvert siffer av gangen
-    # Første siffer
-    canvas.create_text(x,y,text=tall_streng[0],font=(myFont, fontSize), fill="black", tags="barcode_text")
-    x += dx*9 + 2
-    for char in tall_streng[1:7]:
-        canvas.create_text(x,y,text=char,font=(myFont, fontSize), fill="black", tags="barcode_text")
-        x += dx*7
-    x += dx*5
-    for char in tall_streng[7:]:
-        canvas.create_text(x,y,text=char,font=(myFont, fontSize), fill="black", tags="barcode_text")
-        x += dx*7
+    fontSize = 10
+    canvas.create_text(x,y,text="minTekst",font=(myFont, fontSize), fill="black", tags="barcode_text")
+    """
+    
 
 # Legger til et inputfelt (Entry)
 input1 = tk.Entry(window)
@@ -160,19 +153,6 @@ canvas.pack(expand=True)
 
 barcode_text_exist = None
 
-"""
-# Tester bar-lageren
-xpos = 100
-ypos = 150
-for i in range(47):
-    if i % 300 == 0:
-        lag_bar(xpos,ypos)
-        lag_bar(xpos+4,ypos)
-        lag_bar(xpos+6,ypos)
-        continue
-    lag_bar(xpos,ypos)
-    xpos += 4
-"""
 
 # Kjører vinduet. Må være nederst i koden.
 window.mainloop()

@@ -48,25 +48,3 @@ def get_digits_list(list1):
         output.append(int(digit))
     return output
 
-
-if __name__ == "__main__":
-    number = 5
-    sequence = LG_sequences[number]
-    print("number: ", number)
-    for letter in sequence:
-        print(digits[number][letter])
-    
-    
-    exit()
-    
-    for key,val in digits.items():
-        print(key,val)
-
-
-    print("{")
-    for digit,dict in digits_text.items():
-        print(f'{digit}:', end=" {")
-        for key,val in dict.items():
-            print(f'"{key}":{get_digits_list(list(val))},', end=" ")
-        print("},")
-    print("}")
