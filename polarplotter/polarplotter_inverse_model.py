@@ -1,4 +1,10 @@
 """
+BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
+
+                    KODEN VIRKER DÅRLIG! LAGER BUER!
+
+BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD BAD
+
 Simulering av hvordan tegningen blir hvis utgangspunktet for bevegelse av tegnehodet
 er lengden på snorene.
 Resultatet:
@@ -199,8 +205,8 @@ class Penn:
     def fjern(self,canvas):
         canvas.delete("penn")
 
-x_start = bredde/2
-y_start = 400
+x_start = 100
+y_start = 100
 penn = Penn(5, x_start, y_start, canvas_width)
      
 
@@ -211,7 +217,7 @@ fps = 50
 dt = int(1000/fps)
 
 motorRunning = False
-n_steps = 15  # divide movement in 15 points
+n_steps = 20  # divide movement in 15 points
 penn.tegn(canvas)
 dr_a = 1
 dr_b = 1
@@ -252,6 +258,14 @@ targets = [
 
 ]
 
+flag = [
+    [100,100],
+    [400,100],
+    [400,300],
+    [100,300],
+    [100,100]
+]
+
 
 teller = 0
 
@@ -260,8 +274,10 @@ while isRunning:
     1) Calculate motor speeds
     2) Move motors in steps corresponding to the speeds
     """
+    # Setter hvilken liste med punkter vi skal bruke.
+    target_list = flag
     if motorRunning == False:
-        next_point = targets[teller]
+        next_point = target_list[teller]
         x_target = next_point[0]
         y_target = next_point[1]
         print(f"next point: ({x_target},{y_target})")
@@ -277,7 +293,7 @@ while isRunning:
         penn.step_motors(n_steps)
         if norm( penn.a - np.array([x_target,y_target]) ) <= 1:
             motorRunning = False
-            if teller == len(targets):
+            if teller == len(target_list):
                 # Finished with all points to be drawn.
                 print(f"Finished drawing all target points!")
                 isRunning = False

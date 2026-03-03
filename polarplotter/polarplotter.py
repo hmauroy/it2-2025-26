@@ -64,22 +64,23 @@ class Penn:
         self.x = x
         self.y = y
         self.L = L
-        self.a = 0
+        self.a = 0  # vector a pointing from (0,0) to a point
         self.b = 0
         self.ta = 10 # time for movement from point A to point B.
         self.tb = 0
-        self.va = 0 # speed of the rope for motor A = speed of the length of vector a.
+        self.va = 0 # speed cm/s of the rope for motor A = speed of the length of vector a.
         self.vb = 0
-        self.dr_a = 0
+        self.dr_a = 0 # delta movement for the ropes when going from one point to the next.
         self.dr_b = 0
         self.dir_a = 1
         self.dir_b = 1
-        self.v_max = 10
+        self.v_max = 30 # Maximum speed, (px/s) 10 cm/s
         self.update_vectors(x,y)
         self.a_len = self.calc_vector_length(self.a)
         self.b_len = self.calc_vector_length(self.b)
         self.isAtTarget = False
         self.n_steps = 15
+        self.path = []
     
     def update_vectors(self,x,y):
         self.x = x
@@ -106,10 +107,10 @@ class Penn:
         """
         next_point = np.array([x2,y2])
         L_vec = np.array([self.L,0])
-        # 1) Find distances of the new vectors pointing to the new point.
+        # 1) Find delta movement for the ropes to get to the next point.
         self.dr_a = norm(next_point) - norm(self.a)
         self.dr_b = norm(next_point-L_vec) - norm(self.b)
-        #print(f"dr_a = {self.dr_a}, dr_b = {self.dr_b}")
+        print(f"dr_a = {self.dr_a}, dr_b = {self.dr_b}")
         # Sets directions of spooling: 1 is outwards, -1 is inwards.
         self.dir_a = 1
         self.dir_b = 1
@@ -120,14 +121,14 @@ class Penn:
             self.dir_b = -1
         # Check if new distance is longer or shorter
         if abs(self.dr_a) > abs(self.dr_b):
-            self.va = self.dir_a * 10
+            self.va = self.dir_a * self.v_max
             #print(f"va={self.va}")
             self.ta = abs(self.dr_a) / abs(self.va)
             #print(f"ta={self.ta}")
             self.vb = self.dir_b * abs(self.dr_b) / abs(self.ta)
             self.tb = self.ta   # The travel time is equal.
         else:
-            self.vb = self.dir_b * 10
+            self.vb = self.dir_b * self.v_max
             #print(f"vb={self.vb}")
             self.tb = abs(self.dr_b) / abs(self.vb)
             #print(f"tb={self.tb}")
@@ -138,25 +139,14 @@ class Penn:
 
     def calc_line(self,x_target, y_target,n_points):
         """
-        Find slope and constant from the current point to next.
-        Ettpunktsformelen gir denne likningen
-        y = a*x - a*x_target + y_target
-        y = a*x + b => b = -a*x_target + y_target
-        a=3
-        P = (4,1)
-        b = -3*4 + 1 = -11
-        a=5
-        P = (2,5)
-        b = -5*2 + 5 = -5
+        Calculates points along a straight line from point P1 to point P2.
         """
         # Figure out if the line is vertical. Then the steps is just n steps along the y-axis.
         if x_target == self.x:
             print("Line along y-axis")
         elif y_target == self.y:
             print("Line along x-axis")
-        else:
-            a = (y_target - self.y) / (x_target - self.x)
-            b = -a*x_target + y_target
+        
 
         # Find vector distance for movement.
         x_len = x_target - self.x
@@ -166,11 +156,10 @@ class Penn:
         dy = y_len/n_points
 
         current_point = [self.x,self.y]
-        points = [current_point]
+        self.path = [current_point]
         for i in range(n_points):
             current_point = [current_point[0] + dx, current_point[1] + dy]
-            points.append(current_point)
-        return points
+            self.path.append(current_point)
 
 
     def equations(self,vars):
@@ -182,7 +171,7 @@ class Penn:
         eq2 = (L-x)**2 + y**2 - b**2
         return [eq1, eq2]
 
-    def step_motors(self, n_steps):
+    def step_motors(self):
         """
         1) Move shorten/elongate a_len and b_len in accordance to the speeds or step_length
         2) Calculate (x,y) positions using the lengths of the ropes (vectors)
@@ -214,8 +203,8 @@ class Penn:
         canvas.delete("penn")
 
 x_start = 100
-y_start = 200
-penn = Penn(5, x_start, y_start, canvas_width)
+y_start = 100
+penn = Penn(7.5, x_start, y_start, canvas_width)
      
 
 
@@ -253,6 +242,17 @@ targets = [
     [400,200],
     [100,200],
 ]
+flag = [
+    [400,100],
+    [400,300],
+    [100,300],
+    [100,100]
+]
+
+skrå = [
+    [150,20]
+]
+
 teller = 0
 
 while isRunning:
@@ -260,22 +260,26 @@ while isRunning:
     1) Calculate motor speeds
     2) Move motors in steps corresponding to the speeds
     """
+    # Setter hvilken liste med punkter vi bruker.
+    target_list = skrå
     if motorRunning == False:
-        next_point = targets[teller]
+        next_point = target_list[teller]
         x_target = next_point[0]
         y_target = next_point[1]
         print(f"next point: ({x_target},{y_target})")
         penn.calc_speeds(x_target,y_target)
-        points = penn.calc_line(x_target, y_target,5)
-        print(points)
-        for point in points:
+        penn.calc_line(x_target, y_target,5)
+        penn.step_motors()
+        for point in penn.path:
             canvas.after(dt)  # venter i x ms.
             canvas.create_oval(point[0],point[1],point[0]+15,point[1]+15, fill="white", tags="point")
+            penn.x = point[0]
+            penn.y = point[1]
             canvas.update()
         #exit()
         #motorRunning = True
         teller += 1
-        if teller >= len(targets):
+        if teller >= len(target_list):
             isRunning = False
     
     """
